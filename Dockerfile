@@ -4,7 +4,7 @@ ENV LANG=C.UTF-8 \
     LC_ALL=C.UTF-8
 
 RUN apt-get update && \
-    apt-get --yes install ssh git make
+    apt-get --yes install ssh git make imagemagick
 
 RUN stack install hakyll
 
