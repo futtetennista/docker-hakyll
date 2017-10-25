@@ -3,16 +3,35 @@ jobs:
   build:
     docker:
       - image: docker:stable-git
-    branches:
-      only:
-        - master
     steps:
       - checkout
-      - run: |
-          docker run --privileged --name docker-in-docker -d docker:stable-dind
-          docker build -t futtetennista/hakyll:futtetennismo-0.1.0 .
-          docker build -t futtetennista/hakyll .
-      - deploy:
+      - setup_remote_docker
+      - restore_cache:
+          keys:
+            - v1-{{ .Branch }}
+          paths:
+            - /caches/hakyll.tar
+      - run:
+          name: Load Docker image layer cache
           command: |
-            docker login -u $DOCKER_HUB_USERNAME -p $DOCKER_HUB_PASSWORD
-            docker push futtetennista/hakyll
+            set +o pipefail
+            docker load -i /caches/docker-hakyll.tar | true
+      - run:
+          name: Build docker image
+          command: docker build --cache-from=futtetennista/hakyll -t futtetennista/hakyll:futtetennismo-0.1.0 .
+      - run:
+          name: Save Docker image layer cache
+          command: |
+            mkdir -p /caches
+            docker save -o /caches/docker-hakyll.tar futtetennista/hakyll
+      - save_cache:
+          key: v1-{{ .Branch }}-{{ epoch }}
+          paths:
+            - /caches/docker-hakyll.tar
+      - deploy:
+          name: Push to Docker Hub
+          command: |
+            if [ "$ {CIRCLE_BRANCH}" == "master" ]; then
+              docker login -u $DOCKER_HUB_USERNAME -p $DOCKER_HUB_PASSWORD
+              docker push futtetennista/hakyll
+            fi
