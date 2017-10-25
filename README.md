@@ -1,3 +1,5 @@
+[![CircleCI](https://circleci.com/gh/futtetennista/docker-hakyll/tree/master.svg?style=svg)](https://circleci.com/gh/futtetennista/docker-hakyll/tree/master)
+
 # docker-hakyll
 Base haskell image with hakyll and some other utilities already installed, also available on [Docker Hub](https://hub.docker.com/r/futtetennista/hakyll/).
 
