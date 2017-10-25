@@ -1,0 +1,13 @@
+version: 2
+jobs:
+  image: docker:stable-git
+  build:
+    steps:
+      - checkout
+      - run: |
+          docker build -t futtetennista/hakyll:futtetennismo-0.1.0 .
+          docker build -t futtetennista/hakyll .
+      - deploy:
+          - run: |
+              docker login -u $DOCKER_HUB_USERNAME -p $DOCKER_HUB_PASSWORD
+              docker push futtetennista/hakyll
