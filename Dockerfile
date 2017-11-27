@@ -3,20 +3,20 @@ FROM haskell:8.0.2
 ENV LANG=C.UTF-8 \
     LC_ALL=C.UTF-8
 
-RUN apt-get update && apt-get --yes install ssh \
+RUN apt-get update && apt-get install --yes \
     git \
+    imagemagick \
     make \
-    imagemagick
+    ssh
 
-RUN stack --resolver lts-9.14 install base \
-    hakyll \
+RUN stack --resolver lts-9.14 install \
+    base \
     bytestring \
-    containers \
-    stm \
-    mtl \
     conduit-combinators \
-    hakyll-sass \
-    hakyll-favicon
+    containers \
+    hakyll \
+    mtl \
+    stm
 
 EXPOSE 8000
 
