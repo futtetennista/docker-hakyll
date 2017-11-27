@@ -10,28 +10,38 @@ jobs:
           keys:
             - v1-{{ .Branch }}
           paths:
-            - /caches/hakyll.tar
+            - /caches/
       - run:
-          name: Load Docker image layer cache
+          name: Build docker image without extensions
           command: |
-            set +o pipefail
+            set -euf -o pipefail
             docker load -i /caches/docker-hakyll.tar | true
+            docker build --cache-from=futtetennista/hakyll:"$HAKYLL_VERSION" -t futtetennista/hakyll:"$HAKYLL_VERSION" .
       - run:
-          name: Build docker image
-          command: docker build --cache-from=futtetennista/hakyll -t futtetennista/hakyll:futtetennismo-0.1.0 .
+          name: Tag latest docker image
+          command: docker tag futtetennista/hakyll:"$HAKYLL_VERSION" futtetennista/hakyll:latest
+      - run:
+          name: Build docker image with extensions
+          command: |
+            set -euf -o pipefail
+            docker load -i /caches/docker-hakyll-ext.tar | true
+            docker build --cache-from=futtetennista/hakyll:"$HAKYLL_VERSION"-ext -t futtetennista/hakyll:"$HAKYLL_VERSION"-ext -f Dockerfile.ext .
       - run:
           name: Save Docker image layer cache
           command: |
             mkdir -p /caches
-            docker save -o /caches/docker-hakyll.tar futtetennista/hakyll
+            docker save -o /caches/docker-hakyll.tar futtetennista/hakyll:"$HAKYLL_VERSION"
+            docker save -o /caches/docker-hakyll-ext.tar futtetennista/hakyll:"$HAKYLL_VERSION"-ext
       - save_cache:
           key: v1-{{ .Branch }}-{{ epoch }}
           paths:
-            - /caches/docker-hakyll.tar
+            - /caches/
       - deploy:
           name: Push to Docker Hub
           command: |
             if [ "$ {CIRCLE_BRANCH}" == "master" ]; then
-              docker login -u $DOCKER_HUB_USERNAME -p $DOCKER_HUB_PASSWORD
-              docker push futtetennista/hakyll
+              docker login -u "$DOCKER_HUB_USERNAME" -p "$DOCKER_HUB_PASSWORD"
+              docker push futtetennista/hakyll:latest
+              docker push futtetennista/hakyll:"$HAKYLL_VERSION"
+              docker push futtetennista/hakyll:"$HAKYLL_VERSION"-ext
             fi
