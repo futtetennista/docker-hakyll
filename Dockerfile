@@ -5,8 +5,6 @@ ENV LANG=C.UTF-8 \
 
 RUN apt-get update && apt-get install --yes \
     git \
-    imagemagick \
-    make \
     ssh
 
 RUN stack --resolver lts-9.14 install \

@@ -1,5 +1,9 @@
 FROM futtetennista/hakyll:latest
 
+RUN apt-get update && apt-get install --yes \
+    imagemagick \
+    make
+
 RUN stack --resolver lts-9.14 install \
     hakyll-favicon \
     hakyll-sass

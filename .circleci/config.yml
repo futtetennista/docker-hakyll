@@ -25,7 +25,7 @@ jobs:
           command: |
             set -euf +o pipefail
             docker load -i /caches/docker-hakyll-ext.tar | true
-            docker build --cache-from=futtetennista/hakyll:"$HAKYLL-VERSION"-ext -t futtetennista/hakyll:"$HAKYLL_VERSION"-ext -f Dockerfile.ext .
+            docker build --cache-from=futtetennista/hakyll:"$HAKYLL_VERSION"-ext -t futtetennista/hakyll:"$HAKYLL_VERSION"-ext -f Dockerfile.ext .
       - run:
           name: Save Docker image layer cache
           command: |
