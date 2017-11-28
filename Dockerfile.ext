@@ -2,7 +2,7 @@ FROM futtetennista/hakyll:latest
 
 RUN stack --resolver lts-9.14 install \
     hakyll-favicon \
-    hakyll-sass \
+    hakyll-sass
 
 EXPOSE 8000
 
