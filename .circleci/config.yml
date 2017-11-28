@@ -39,7 +39,7 @@ jobs:
       - deploy:
           name: Push to Docker Hub
           command: |
-            if [ "$ {CIRCLE_BRANCH}" == "master" ]; then
+            if [ "$CIRCLE_BRANCH" == "master" ]; then
               docker login -u "$DOCKER_HUB_USERNAME" -p "$DOCKER_HUB_PASSWORD"
               docker push futtetennista/hakyll:latest
               docker push futtetennista/hakyll:"$HAKYLL_VERSION"
