@@ -33,7 +33,7 @@ jobs:
             docker save -o /caches/docker-hakyll.tar futtetennista/hakyll:"$HAKYLL_VERSION"
             docker save -o /caches/docker-hakyll-ext.tar futtetennista/hakyll:"$HAKYLL_VERSION"-ext
       - save_cache:
-          key: v1-{{ .Branch }}-{{ epoch }}
+          key: v1-{{ .Branch }}-"$HAKYLL_VERSION"
           paths:
             - /caches/
       - deploy:
