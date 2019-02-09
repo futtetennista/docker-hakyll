@@ -1,13 +1,15 @@
 FROM futtetennista/hakyll:latest
 
 RUN apt-get update && apt-get install --yes \
-    imagemagick \
-    make
+  curl \
+  imagemagick \
+  make
 
-RUN stack upgrade && stack --resolver lts-13.6 install \
-    hakyll-favicon \
-    hakyll-sass
+# https://github.com/commercialhaskell/stackage/issues/3132
+RUN curl -sSL https://get.haskellstack.org/ | sh -s - -f
 
-EXPOSE 8000
+COPY stack.yaml.ext /root/.stack/global-project/stack.yaml
 
-ENTRYPOINT ["bash"]
+RUN stack --resolver lts-13.6 install \
+  hakyll-favicon \
+  hakyll-sass
