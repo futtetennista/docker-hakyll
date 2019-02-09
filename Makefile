@@ -1,13 +1,14 @@
-build:
-	ifndef VERSION
-	  $(error Please define a VERSION)
-	endif
+.EXPORT_ALL_VARIABLES:
+HAKYLL_VERSION = 4.12.5.1
+
+build-image:
 	set +o pipefail
-	docker load -i ./.caches/docker-hakyll.tar | true
-	docker build --cache-from=futtetennista/hakyll -t futtetennista/hakyll:futtetennismo-$(VERSION) .
-	mkdir -p ./.caches
-	docker save -o ./.caches/docker-hakyll.tar futtetennista/hakyll
+	docker build -t futtetennista/hakyll:$$HAKYLL_VERSION .
+
+build-image-ext:
+	set +o pipefail
+	docker build -t futtetennista/hakyll-ext:$$HAKYLL_VERSION .
 
 push: build
 	docker login
-	docker push futtetennista/hakyll
+	docker push futtetennista/hakyll-ext
